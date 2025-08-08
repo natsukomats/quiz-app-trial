@@ -16,7 +16,7 @@
             background-color: #f4f4f4;
             color: #333;
         }
-       .quiz-container {
+      .quiz-container {
             background-color: #fff;
             padding: 30px;
             border-radius: 8px;
@@ -29,17 +29,17 @@
             color: #0056b3;
             margin-bottom: 20px;
         }
-       .question-number {
+      .question-number {
             font-size: 1.1em;
             margin-bottom: 15px;
             color: #555;
         }
-       .question-text {
+      .question-text {
             font-size: 1.5em;
             margin-bottom: 30px;
             font-weight: bold;
         }
-       .options-container button {
+      .options-container button {
             background-color: #007bff;
             color: white;
             border: none;
@@ -52,10 +52,10 @@
             width: calc(100% - 16px); /* ボタンの幅を調整 */
             box-sizing: border-box; /* パディングとボーダーを幅に含める */
         }
-       .options-container button:hover {
+      .options-container button:hover {
             background-color: #0056b3;
         }
-       .options-container button:disabled {
+      .options-container button:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
@@ -64,7 +64,7 @@
             font-size: 1.3em;
             font-weight: bold;
         }
-       .navigation-buttons button {
+      .navigation-buttons button {
             background-color: #28a745;
             color: white;
             border: none;
@@ -75,10 +75,10 @@
             font-size: 1em;
             transition: background-color 0.3s ease;
         }
-       .navigation-buttons button:hover {
+      .navigation-buttons button:hover {
             background-color: #218838;
         }
-       .navigation-buttons button:disabled {
+      .navigation-buttons button:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
@@ -134,33 +134,38 @@
         const nextButton = document.getElementById('next-button');
         const restartButton = document.getElementById('restart-button');
 
+        // 問題をロードして表示する関数
         function loadQuestion() {
             answeredThisQuestion = false; // 新しい問題がロードされたらフラグをリセット
             resultElement.textContent = ''; // 結果表示をクリア
             nextButton.style.display = 'none'; // 「次の問題へ」ボタンを非表示に
+            restartButton.style.display = 'none'; // 「もう一度プレイ」ボタンを非表示に
 
-            if (currentQuestionIndex < quizData.length) {
-                const currentQuiz = quizData[currentQuestionIndex];
-                questionNumberElement.textContent = `問題 ${currentQuestionIndex + 1} / ${quizData.length}`;
-                questionTextElement.textContent = currentQuiz.question;
-                optionsContainer.innerHTML = ''; // 選択肢をクリア
+            const currentQuiz = quizData[currentQuestionIndex];
+            questionNumberElement.textContent = `問題 ${currentQuestionIndex + 1} / ${quizData.length}`;
+            questionTextElement.textContent = currentQuiz.question;
+            optionsContainer.innerHTML = ''; // 選択肢をクリア
 
-                currentQuiz.options.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option;
-                    button.onclick = () => checkAnswer(option);
-                    optionsContainer.appendChild(button);
-                });
-            } else {
-                // 全てのクイズが終了した場合
-                questionNumberElement.textContent = '';
-                questionTextElement.textContent = 'クイズ終了！';
-                optionsContainer.innerHTML = '';
-                resultElement.textContent = `${quizData.length}問中 ${score}問正解しました！`;
-                restartButton.style.display = 'block'; // 「もう一度プレイ」ボタンを表示
-            }
+            currentQuiz.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(button);
+            });
         }
 
+        // クイズ終了時の結果画面を表示する関数
+        function showResults() {
+            questionNumberElement.textContent = ''; // 問題番号をクリア
+            questionTextElement.textContent = 'クイズ終了！'; // クイズ終了メッセージ
+            optionsContainer.innerHTML = ''; // 選択肢を非表示に
+            resultElement.textContent = `${quizData.length}問中 ${score}問正解しました！`; // 最終結果
+            resultElement.style.color = '#0056b3'; // 結果の色をリセット
+            nextButton.style.display = 'none'; // 「次の問題へ」ボタンを非表示に
+            restartButton.style.display = 'block'; // 「もう一度プレイ」ボタンを表示
+        }
+
+        // 回答をチェックする関数
         function checkAnswer(selectedOption) {
             if (answeredThisQuestion) {
                 return; // 既に回答済みの場合は何もしない
@@ -188,27 +193,29 @@
                 resultElement.style.color = '#dc3545';
             }
 
+            // 最後の問題かどうかを判断し、次のアクションを決定
             if (currentQuestionIndex < quizData.length - 1) {
-                nextButton.style.display = 'block'; // 次の問題がある場合のみ表示
+                // 最後の問題ではない場合、次の問題へ進むボタンを表示
+                nextButton.style.display = 'block';
             } else {
-                // 最後の問題に回答したら、すぐに結果を表示する
+                // 最後の問題に回答した場合、少し待ってから最終結果画面へ移行
                 setTimeout(() => {
-                    loadQuestion(); // クイズ終了画面へ
+                    showResults(); // 最終画面をロード
                 }, 1500); // 1.5秒後に結果表示
             }
         }
 
+        // 次の問題へ進む関数
         function nextQuestion() {
             currentQuestionIndex++;
             loadQuestion();
         }
 
+        // クイズを最初からやり直す関数
         function restartQuiz() {
             currentQuestionIndex = 0;
             score = 0;
-            restartButton.style.display = 'none';
-            resultElement.style.color = '#333'; // 色をリセット
-            loadQuestion();
+            loadQuestion(); // クイズを最初からロード
         }
 
         // アプリ起動時に最初の問題をロード
