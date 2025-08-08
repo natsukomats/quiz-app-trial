@@ -64,6 +64,12 @@
             font-size: 1.3em;
             font-weight: bold;
         }
+        #explanation {
+            margin-top: 10px;
+            font-size: 1em;
+            color: #555;
+            line-height: 1.5;
+        }
        .navigation-buttons button {
             background-color: #28a745;
             color: white;
@@ -94,6 +100,7 @@
             <div class="options-container" id="options-container">
             </div>
             <p id="result"></p>
+            <p id="explanation"></p>
             <div class="navigation-buttons">
                 <button id="next-button" onclick="nextQuestion()" style="display: none;">次の問題へ</button>
             </div>
@@ -110,22 +117,26 @@
             {
                 question: "日本で一番高い山は？",
                 options: ["富士山", "南アルプス", "北アルプス"],
-                answer: "富士山"
+                answer: "富士山",
+                explanation: "富士山の標高は3,776メートルで、日本の最高峰です。"
             },
             {
                 question: "日本の首都は？",
                 options: ["大阪", "東京", "京都"],
-                answer: "東京"
+                answer: "東京",
+                explanation: "1868年の明治維新以降、東京が日本の首都となりました。"
             },
             {
                 question: "世界で一番大きな海は？",
                 options: ["大西洋", "インド洋", "太平洋"],
-                answer: "太平洋"
+                answer: "太平洋",
+                explanation: "太平洋の面積は、世界の海の半分近くを占めます。"
             },
             {
                 question: "太陽系の惑星で一番大きいのは？",
                 options: ["地球", "木星", "火星"],
-                answer: "木星"
+                answer: "木星",
+                explanation: "木星は他の全ての惑星を合わせたよりも大きな質量を持つ巨大な惑星です。"
             }
         ];
 
@@ -142,13 +153,14 @@
         const questionTextElement = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
         const resultElement = document.getElementById('result');
+        const explanationElement = document.getElementById('explanation');
         const nextButton = document.getElementById('next-button');
 
         function loadQuestion() {
             if (currentQuestionIndex < quizData.length) {
-                // 問題表示
                 answeredThisQuestion = false;
                 resultElement.textContent = '';
+                explanationElement.textContent = ''; // 解説文をクリア
                 nextButton.style.display = 'none';
                 finalScreen.style.display = 'none';
                 quizContent.style.display = 'block';
@@ -164,7 +176,6 @@
                     optionsContainer.appendChild(button);
                 });
             } else {
-                // クイズ終了画面
                 quizContent.style.display = 'none';
                 finalScreen.style.display = 'block';
                 finalMessage.textContent = 'クイズ終了！';
@@ -178,7 +189,8 @@
             }
             answeredThisQuestion = true;
 
-            const correctAnswer = quizData[currentQuestionIndex].answer;
+            const currentQuiz = quizData[currentQuestionIndex];
+            const correctAnswer = currentQuiz.answer;
             const buttons = optionsContainer.querySelectorAll('button');
 
             buttons.forEach(button => {
@@ -198,6 +210,9 @@
                 resultElement.textContent = `不正解です。正解は「${correctAnswer}」でした。`;
                 resultElement.style.color = '#dc3545';
             }
+            
+            // 解説文を表示
+            explanationElement.textContent = currentQuiz.explanation;
 
             if (currentQuestionIndex < quizData.length - 1) {
                 nextButton.style.display = 'block';
@@ -205,7 +220,7 @@
                 setTimeout(() => {
                     currentQuestionIndex++;
                     loadQuestion();
-                }, 1500);
+                }, 3000); // 3秒後に最終画面へ
             }
         }
 
