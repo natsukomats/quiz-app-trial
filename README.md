@@ -1,2 +1,34 @@
 # quiz-app-trial
 GEMINIでどのくらい作れるかの実験
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>クイズアプリ</title>
+</head>
+<body>
+
+    <h1>日本で一番高い山は？</h1>
+    <p>
+        <button onclick="checkAnswer('富士山')">富士山</button>
+        <button onclick="checkAnswer('南アルプス')">南アルプス</button>
+        <button onclick="checkAnswer('北アルプス')">北アルプス</button>
+    </p>
+
+    <h2 id="result"></h2>
+
+    <script>
+        function checkAnswer(answer) {
+            const correctAnswer = '富士山';
+            const resultElement = document.getElementById('result');
+
+            if (answer === correctAnswer) {
+                resultElement.textContent = '正解です！';
+            } else {
+                resultElement.textContent = '不正解です。';
+            }
+        }
+    </script>
+
+</body>
+</html>
